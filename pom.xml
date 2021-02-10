@@ -13,6 +13,7 @@
         <module>spi</module>
         <module>plugin</module>
         <module>client</module>
+        <module>fileutils</module>
     </modules>
 
     <properties>
