@@ -8,6 +8,7 @@ module se.group4.core {
     requires net.bytebuddy;
     requires com.fasterxml.classmate;
     requires java.xml.bind;
+    requires com.google.gson;
 
     opens se.group4.core to org.hibernate.orm.core;
 //    requires static lombok;
