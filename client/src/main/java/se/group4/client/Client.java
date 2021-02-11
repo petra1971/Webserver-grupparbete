@@ -13,7 +13,7 @@ public class Client
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://jsonplaceholder.typicode.com/todos/1"))
+                .uri(URI.create("https://jsonplaceholder.typicode.com/todos/1"))  // Länk???
                 .build();
 
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
