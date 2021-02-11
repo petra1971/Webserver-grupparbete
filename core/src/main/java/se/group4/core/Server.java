@@ -4,8 +4,12 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import se.group4.core.models.Todo;
+import se.group4.core.models.Todos;
 import se.group4.fileutils.FileReader;
 
 public class Server {
@@ -111,5 +115,18 @@ public class Server {
         }
         return requestedUrl;
     }
+
+//    private static void createJsonResponse() {
+//
+//        var todos = new Todos();
+//        todos.todos = new ArrayList<>();
+//        todos.todos.add(new Todo("1", "Todo 1", false));
+//        todos.todos.add(new Todo("2", "Todo 2", false));
+//
+//        JsonConverter converter = new JsonConverter();
+//
+//        var json = converter.convertToJson(todos);
+//        System.out.println(json);
+//    }
 }
 
