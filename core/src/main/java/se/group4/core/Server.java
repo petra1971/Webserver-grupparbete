@@ -1,12 +1,15 @@
 package se.group4.core;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.HashMap;
+import java.util.Map;
 
 import se.group4.core.models.Todo;
 import se.group4.core.models.Todos;
@@ -75,12 +78,47 @@ public class Server {
         try {
             BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            String url = readHeaders(input);
+            Request request = readHeaders(input);
 
-            var output = new PrintWriter(socket.getOutputStream());
+            if (request != null) {
+                if (request.getRequestType().equals("GET")) {
+                    URLHandler handler = routes.get(request.getUrl());
 
-            File file = new File("web" + File.separator + url);
-            byte[] page = FileReader.readFromFile(file);
+                    if (handler == null) {
+                        handler = new FileHandler();
+                    }
+                    response = handler.handleURL(request);
+                    postHttpResponse(socket, response);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //            var output = new PrintWriter(socket.getOutputStream());
+//
+//            File file = new File("web" + File.separator + url);
+//            byte[] page = FileReader.readFromFile(file);
+//
+//            String contentType = Files.probeContentType(file.toPath());
+//
+//            output.println("HTTP/1.1 200 OK");
+//            output.println("Content-Length:" + page.length);
+//            output.println("Content-Type:"+contentType);  //application/json
+//            output.println("");
+//            //output.print(page);
+//            output.flush();
+//
+//            var dataOut = new BufferedOutputStream(socket.getOutputStream());
+//            dataOut.write(page);
+//            dataOut.flush();
+//            socket.close();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
             String contentType = Files.probeContentType(file.toPath());
 
@@ -116,6 +154,29 @@ public class Server {
         return requestedUrl;
     }
 
+
+    private static void postHttpResponse(Socket socket, Response response) {  //kan alla svar, både filer och json, skickas som byte[]?
+        //Lägg detta i Response-klassen eventuellt
+        try {
+            var output = new PrintWriter(socket.getOutputStream());
+
+            //Print header
+            output.println("HTTP/1.1 200 OK");
+            output.println("Content-Length:" + response.getContent().length);
+            output.println("Content-Type:" + response.getContentType());
+            output.println("");
+            output.flush();
+
+            //Print body/file-contents
+            var dataOut = new BufferedOutputStream(socket.getOutputStream());
+            dataOut.write(response.getContent());
+            dataOut.flush();
+            socket.close();
+
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
 //    private static void createJsonResponse() {
 //
 //        var todos = new Todos();
