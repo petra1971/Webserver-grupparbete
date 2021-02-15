@@ -1,10 +1,12 @@
 package se.group4.core;
 
+import java.util.List;
+
 public class Request {
     private String requestType;
     private String url;
     private String httpVersion;
-    private String contectType;
+    private String contentType;
     private int contentLength;
 
     //First check for URL
@@ -14,11 +16,11 @@ public class Request {
     public Request() {
     }
 
-//    public Request(String requestType, String url, String httpVersion, String contectType, int contentLength) {
+//    public Request(String requestType, String url, String httpVersion, String contentType, int contentLength) {
 //        this.requestType = requestType;
 //        this.url = url;
 //        this.httpVersion = httpVersion;
-//        this.contectType = contectType;
+//        this.contentType = contentType;
 //        this.contentLength = contentLength;
 //    }
 
@@ -45,12 +47,12 @@ public class Request {
     public void setHttpVersion(String httpVersion) { this.httpVersion = httpVersion;
     }
 
-    public String getContectType() {
-        return contectType;
+    public String getContentType() {
+        return contentType;
     }
 
-    public void setContectType(String contectType) {
-        this.contectType = contectType;
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 
     public int getContentLength() {

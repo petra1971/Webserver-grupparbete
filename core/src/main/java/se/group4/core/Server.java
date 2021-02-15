@@ -1,19 +1,15 @@
 package se.group4.core;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import se.group4.core.models.Todo;
-import se.group4.core.models.Todos;
-import se.group4.fileutils.FileReader;
+//Enums  - Efter möte med Martin
 
 public class Server {
 
@@ -120,27 +116,27 @@ public class Server {
 //        }
 //    }
 
-            String contentType = Files.probeContentType(file.toPath());
-
-            output.println("HTTP/1.1 200 OK");
-            output.println("Content-Length:" + page.length);
-            output.println("Content-Type:"+contentType);  //application/json
-            output.println("");
-            //output.print(page);
-            output.flush();
-
-            var dataOut = new BufferedOutputStream(socket.getOutputStream());
-            dataOut.write(page);
-            dataOut.flush();
-            socket.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
+    public String readLine(BufferedInputStream inputStream) throws IOException {
+        final int MAX_READ = 4096;
+        byte[] buffer = new byte[MAX_READ];
+        int bytesRead = 0;
+        while (bytesRead < MAX_READ) {
+            buffer[bytesRead++] = (byte) inputStream.read();
+            if (buffer[bytesRead - 1] == '\r') {
+                buffer[bytesRead++] = (byte) inputStream.read();
+                if( buffer[bytesRead - 1] == '\n') {
+                    //Här ska det försökas läsas från body
+                    break;
+                }
+            }
         }
+        return new String(buffer,0,bytesRead-2, StandardCharsets.UTF_8);
     }
 
-    private static String readHeaders(BufferedReader input) throws IOException {
-        String requestedUrl = "";
+
+    private static Request readHeaders(BufferedReader input) throws IOException {
+        Request request = new Request();
+        String[] split;
         while (true) {
             String headerLine = input.readLine();
             if( headerLine.startsWith("GET"))
