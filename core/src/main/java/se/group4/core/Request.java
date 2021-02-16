@@ -44,8 +44,7 @@ public class Request {
         return httpVersion;
     }
 
-    public void setHttpVersion(String httpVersion) { this.httpVersion = httpVersion;
-    }
+    public void setHttpVersion(String httpVersion) { this.httpVersion = httpVersion;}
 
     public String getContentType() {
         return contentType;

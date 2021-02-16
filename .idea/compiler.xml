@@ -13,5 +13,8 @@
         <module name="spi" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="dao" target="15" />
+    </bytecodeTargetLevel>
   </component>
 </project>

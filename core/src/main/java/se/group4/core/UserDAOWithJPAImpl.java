@@ -17,41 +17,60 @@ public class UserDAOWithJPAImpl implements UserDAO {
     }
 
     @Override
-    public List<se.group4.core.User> getByName(String name) {
-        List<se.group4.core.User> list;
+    public List<User> getAllUsers(){
+        List<User> listOfUsers;
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
-        list = em.createQuery("from User u where u.firstName =:firstname", se.group4.core.User.class)
-                .setParameter("firstname",name).getResultList();
+        listOfUsers = em.createQuery("from User",User.class).getResultList();
         em.getTransaction().commit();
-        return list;
-    }
-
-    @Override
-    public boolean updateName(String id, String newName) {
-        boolean success = false;
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        se.group4.core.User u = em.find(se.group4.core.User.class, id);
-        if (u != null ) {
-            u.setFirstName(newName);
-            success = true;
-        }
-        em.getTransaction().commit();
-        return success;
-    }
-
-    @Override
-    public boolean remove(int id) {
-        boolean success = false;
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        se.group4.core.User u = em.find(se.group4.core.User.class,id);
-        if(u != null) {
-            em.remove(u);
-            success = true;
-        }
-        em.getTransaction().commit();
-        return success;
+        return listOfUsers;
     }
 }
+
+
+
+
+
+
+
+
+
+
+//    @Override
+//    public List<User> getByName(String name) {
+//        List<se.group4.core.User> list;
+//        EntityManager em = emf.createEntityManager();
+//        em.getTransaction().begin();
+//        list = em.createQuery("from User u where u.firstName =:firstname", se.group4.core.User.class)
+//                .setParameter("firstname",name).getResultList();
+//        em.getTransaction().commit();
+//        return list;
+//    }
+
+//    @Override
+//    public boolean updateName(String id, String newName) {
+//        boolean success = false;
+//        EntityManager em = emf.createEntityManager();
+//        em.getTransaction().begin();
+//        se.group4.core.User u = em.find(se.group4.core.User.class, id);
+//        if (u != null ) {
+//            u.setFirstName(newName);
+//            success = true;
+//        }
+//        em.getTransaction().commit();
+//        return success;
+//    }
+//
+//    @Override
+//    public boolean remove(int id) {
+//        boolean success = false;
+//        EntityManager em = emf.createEntityManager();
+//        em.getTransaction().begin();
+//        se.group4.core.User u = em.find(se.group4.core.User.class,id);
+//        if(u != null) {
+//            em.remove(u);
+//            success = true;
+//        }
+//        em.getTransaction().commit();
+//        return success;
+//    }
