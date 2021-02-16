@@ -7,7 +7,10 @@ public class Request {
     private String url;
     private String httpVersion;
     private String contentType;
+    private String body;    //Testing
     private int contentLength;
+    private List<String> variablesToBeUpdated;
+
 
     //First check for URL
     //If not url check for file

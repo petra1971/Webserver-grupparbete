@@ -76,18 +76,48 @@ public class Server {
 
     private static Request readHeaders(BufferedReader input) throws IOException {
         Request request = new Request();
-        String[] split;
-        while (true) {
-            String headerLine = input.readLine();
-            if( headerLine.startsWith("GET"))
-            {
-                requestedUrl = headerLine.split(" ")[1];
+        String headerLine = input.readLine();
+        if(headerLine != null) {
+            String[] splitHeadline = headerLine.split(" ");
+
+            request.setRequestType(splitHeadline[0]);
+            request.setUrl(splitHeadline[1]);
+            request.setHttpVersion(splitHeadline[2]);
+
+            String completeRequest = "";
+            headerLine = input.readLine();
+
+            if(request.getRequestType().equals("POST")){
+                while(!headerLine.contains("</HTML>")){
+                    completeRequest.concat(headerLine);
+                    headerLine = input.readLine();
+                }
             }
-            System.out.println(headerLine);
-            if (headerLine.isEmpty())
-                break;
+
+            System.out.println("Printar completeRequest:  " +completeRequest);
+
+
+
+
+            //System.out.println("Whole header: " + headerLine +"\n"+
+//            "splitheadline[0] = " + splitHeadline[0] +"\n"+
+//                    "splitheadline[1] = "+ splitHeadline[1]+
+//                    "\nsplitheadline[2] = "+splitHeadline[2]);
+
+
+//            request.setRequestType(headerLine.split(" ")[0]);
+//            request.setUrl(headerLine.split(" ")[1]);
+//            request.setHttpVersion(headerLine.split(" ")[2]);
         }
-        return requestedUrl;
+//        while (headerLine != null) {
+//            headerLine = input.readLine();
+
+//            if(headerLine.contains("Content-Type")){
+//                request.setContentType(headerLine.split("[:]")[1]);
+//            }
+            //request.setHttpVersion(split[2]);
+        //}
+        return request;
     }
 
 
