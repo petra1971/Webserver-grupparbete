@@ -11,7 +11,7 @@ public class JPAMain {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         User p = em.find(User.class, "530407-7989");
-        p.setFirstName("Pelle");
+        p.setFirstname("Pelle");
         System.out.println(p);
         em.getTransaction().commit();
 

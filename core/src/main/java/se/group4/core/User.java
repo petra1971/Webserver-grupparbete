@@ -11,13 +11,13 @@ public class User {
 
     @Id
     public String id;
-    public String firstName;
-    public String lastName;
+    public String firstname;
+    public String lastname;
 
-    public User(String id, String firstName, String lastName) {
+    public User(String id, String firstname, String lastname) {
         this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.firstname = firstname;
+        this.lastname = lastname;
     }
 
     public User() {
@@ -28,30 +28,32 @@ public class User {
         return id;
     }
 
-    public void setId(String id) { this.id = id; }
-
-    public String getFirstName() {
-        return firstName;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public String getFirstname() {
+        return firstname;
     }
 
-    public String getLastName() {
-        return lastName;
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
     @Override
     public String toString() {
         return "User{" +
                 "id='" + id + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
                 '}';
     }
 }

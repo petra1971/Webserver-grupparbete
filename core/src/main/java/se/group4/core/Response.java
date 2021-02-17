@@ -4,7 +4,7 @@ public class Response {
     private byte[] content;
     private String contentType;
     int contentLength;
-    String statusMessage; //"HTTP/1.1 200 OK"//error
+    String statusMessage;
 
     public Response() {
     }
