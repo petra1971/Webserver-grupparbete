@@ -40,7 +40,7 @@ public class Server {
 
             Map<String,  URLHandler > routes = new HashMap<>();
 
-            Request request = readHeaders(input);
+            Request request = readRequest(input);
 
             if (request != null) {
                 if (request.getRequestType().equals("GET")) {
@@ -78,38 +78,58 @@ public class Server {
     }
 
 
-    private static Request readHeaders(BufferedInputStream input) throws IOException {
+    private static Request readRequest(BufferedInputStream input) throws IOException {
         Request request = new Request();
-//        String headerLine = readLineHeaders(input);
-//        System.out.println("This is headerline: " + headerLine);
-        
-        String headerLine = readLineHeaders(input);
-        if (headerLine != null || !headerLine.isEmpty()) {
-            String[] splitHeadline = headerLine.split(" ");
-            System.out.println("Printar splitHeadline:  " + splitHeadline);
-            request.setRequestType(splitHeadline[0]);
-            System.out.println("Request type: " + request.getRequestType());
-            request.setUrl(splitHeadline[1]);
-            System.out.println("Url: " + request.getUrl());
-            request.setHttpVersion(splitHeadline[2]);
-            System.out.println("Http Version: " + request.getHttpVersion());
-        }
-        
-        if (request.getRequestType().equals("POST"))
-        {
-            while(!headerLine.isEmpty())
-            {
-                    headerLine = readLineHeaders(input);
-                    System.out.println("Body: " +headerLine);
+
+        while (true) {
+            String headerLine = readLineHeaders(input);
+
+            if (headerLine.startsWith("GET") || headerLine.startsWith("POST") || headerLine.startsWith("PUT") || headerLine.startsWith("DELETE")) {
+                parseFirstHeaderLine(request, headerLine);
             }
 
-            headerLine = readLineHeaders(input);
-            System.out.println("Bodytext headerLine " +headerLine);
+            if (headerLine.startsWith("Content-Length"))
+                request.setContentLength(Integer.parseInt(headerLine.split(" ")[1]));
 
-        }return request;
+            if (headerLine.isEmpty()) {
+                break;
+            }
+        }
+
+        if (request.getRequestType().equals("POST")) {
+            readBody(input, request);
+        }
+        return request;
     }
 
 
+
+    private static void readBody(BufferedInputStream input, Request request) throws IOException {
+        byte[] body = new byte[request.getContentLength()];
+        int i = input.read(body);
+        System.out.println("Actual: " + i + ", Expected: " + request.getContentLength());
+        String bodyText = new String(body);
+        System.out.println(bodyText);
+    }
+
+    private static void parseFirstHeaderLine(Request request, String headerLine) {
+        String[] splitHeadline = headerLine.split(" ");
+
+        request.setRequestType(splitHeadline[0]);
+        System.out.println("Request type: " + request.getRequestType());
+        request.setUrl(splitHeadline[1]);
+        System.out.println("Url: " + request.getUrl());
+        request.setHttpVersion(splitHeadline[2]);
+        System.out.println("Http Version: " + request.getHttpVersion());
+
+        if(splitHeadline[1].contains("?")){
+            handleURLParameters(splitHeadline[1]);
+        }
+    }
+
+    private static void handleURLParameters(String url){
+
+    }
 
     private static void postHttpResponse(Socket socket, Response response) {  //kan alla svar, både filer och json, skickas som byte[]?
         //Lägg detta i Response-klassen eventuellt
