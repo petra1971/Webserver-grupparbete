@@ -14,6 +14,7 @@
         <module>plugin</module>
         <module>client</module>
         <module>fileutils</module>
+        <module>database</module>
     </modules>
 
     <properties>

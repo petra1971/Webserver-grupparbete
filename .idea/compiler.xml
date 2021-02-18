@@ -15,6 +15,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="dao" target="15" />
+      <module name="database" target="15" />
     </bytecodeTargetLevel>
   </component>
 </project>

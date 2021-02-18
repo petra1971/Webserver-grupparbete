@@ -1,10 +1,15 @@
 package se.group4.core;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -126,6 +131,24 @@ public class Server {
             handleURLParameters(splitHeadline[1]);
         }
     }
+
+
+    public static List<URLParameter> getParametersFromUrl2(String urlParameterString) {                     //Method returning List with UrlParameter instances
+        System.out.println(urlParameterString);
+        List<URLParameter> urlParameters = new ArrayList();
+        String[] parameterPairs = urlParameterString.split("[&]");     //Får ut par av key och värde
+        for(String parameterPair : parameterPairs) {
+            String keyUrl = parameterPair.split("=")[0];                 //splitta på [=] och lägg in i en Map
+            String valueUrl = parameterPair.split("=")[1];
+            urlParameters.add(new URLParameter(keyUrl, valueUrl));
+            System.out.println("In getParametersFromUrl2 - RequestClass Key: " + keyUrl + " Value: " + valueUrl);
+        }
+        return urlParameters;
+    }
+
+    //Exempel inmatning av ID mot databasen nedan
+    //http://localhost:8080/users?ID=500603-4268
+    //firstname: Johanna, lastname: Lennartsson
 
     private static void handleURLParameters(String url){
 

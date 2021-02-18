@@ -1,5 +1,6 @@
 package se.group4.core;
 
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -9,7 +10,7 @@ public class UserDAOWithJPAImpl implements UserDAO {
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("JPA");
 
     @Override
-    public void create (se.group4.core.User u){
+    public void create (User u){
         EntityManager em = emf.createEntityManager();
         em.getTransaction();
         em.persist(u);
@@ -21,7 +22,7 @@ public class UserDAOWithJPAImpl implements UserDAO {
         List<User> listOfUsers;
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
-        listOfUsers = em.createQuery("from User",User.class).getResultList();
+        listOfUsers = em.createQuery("from User", User.class).getResultList();
         em.getTransaction().commit();
         return listOfUsers;
     }

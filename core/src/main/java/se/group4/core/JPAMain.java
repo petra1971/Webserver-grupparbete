@@ -15,6 +15,13 @@ public class JPAMain {
         System.out.println(p);
         em.getTransaction().commit();
 
+//        //Letar efter "500603-4268" i databasen och skriver ut personen
+//        EntityManager em = emf.createEntityManager();
+//        em.getTransaction().begin();
+//        User u = em.find(User.class, "500603-4268");
+//        System.out.println(u);
+//        em.getTransaction().commit();
+
 
         em.getTransaction().begin();
         User ppp = new User("505012313","Pelle","Hagstedt");
