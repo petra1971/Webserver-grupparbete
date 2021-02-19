@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="core" />
         <module name="client" />
+        <module name="database" />
         <module name="plugin" />
         <module name="fileutils" />
         <module name="spi" />
@@ -15,7 +16,6 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="dao" target="15" />
-      <module name="database" target="15" />
     </bytecodeTargetLevel>
   </component>
 </project>

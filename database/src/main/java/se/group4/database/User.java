@@ -1,11 +1,11 @@
-package se.group4.core;
+package se.group4.database;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="users")
+@Table(name="userDatabase")
 public class User {
 
 
