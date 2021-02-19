@@ -17,6 +17,8 @@ import se.group4.fileutils.FileReader;
                 fileResponse = new Response(content, contentType, contentLength);
 
             } catch (IOException e) {
+
+
                 e.printStackTrace();
             }
             return fileResponse;

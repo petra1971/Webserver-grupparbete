@@ -14,9 +14,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+public class Server2 {
 
-
-public class Server {
 
     public static void main(String[] args) {
 
@@ -25,9 +24,11 @@ public class Server {
         try {
             ServerSocket serverSocket = new ServerSocket(8080);
             System.out.println(Thread.currentThread());
+
+            createMap();
+
             while (true) {
                 Socket socket = serverSocket.accept();
-
                 execServ.execute(()-> handleConnection(socket));
             }
 
@@ -41,9 +42,33 @@ public class Server {
         try {
             BufferedInputStream input = new BufferedInputStream((socket.getInputStream()));
 
-            Map<String,  URLHandler > routes = new HashMap<>();
+            String headerLine = readLineHeaders(input);
 
-            Request request = readRequest(input);
+            String[] header = headerLine.split(" ");
+
+            //boolean isHead = true;
+
+            String url = header[1];
+
+            switch(header[0]){
+                case "GET":
+//                    isHead = false;
+                    readHeaderLines(input, url);
+                    httpResponse = findRoute(url);
+                    break;
+
+                case "POST":
+                    postRequest(input, url);
+                    httpResponse.redirect("/postConfirmation.html");
+                    break;
+
+                case "HEAD":
+//                    isHead = true;
+                    readHeaderLines(input, url);
+                    httpResponse = findRoute(url);
+                    break;
+
+            }
 
             if (request != null) {
                 if (request.getRequestType().equals("GET")) {
@@ -54,8 +79,8 @@ public class Server {
                     }
                     Response response = handler.handleURL(request);
                     if(request.getUrl().equals("/users")){
-                       String jsonBody = handleURLParamUltimate(request.getUrl());
-                       System.out.println("jsonbody: " + jsonBody);
+                        String jsonBody = handleURLParamUltimate(request.getUrl());
+                        System.out.println("jsonbody: " + jsonBody);
                         //URL parametrar, ställa frågor mot databas
 
                     }
@@ -69,9 +94,18 @@ public class Server {
             e.printStackTrace();
         }
     }
+    private static void createMap() {
+
+        route = new HashMap<>();
+        var loader = PluginLoader.findUrlHandlers();
+
+        for (var handler : loader) {
+            route.put(handler.getClass().getAnnotation(PluginType.class).route(), handler);
+        }
+    }
 
 
-
+    //OK METOD
     public static String readLineHeaders(BufferedInputStream inputStream) throws IOException {
         final int MAX_READ = 4096;
         byte[] buffer = new byte[MAX_READ];
@@ -81,7 +115,6 @@ public class Server {
             if (buffer[bytesRead - 1] == '\r') {
                 buffer[bytesRead++] = (byte) inputStream.read();
                 if( buffer[bytesRead - 1] == '\n') {
-                    //Här ska det försökas läsas från body
                     break;
                 }
             }
@@ -89,30 +122,31 @@ public class Server {
         return new String(buffer,0,bytesRead-2, StandardCharsets.UTF_8);
     }
 
-
-    private static Request readRequest(BufferedInputStream input) throws IOException {
-        Request request = new Request();
+    // OK METOD
+    private static int readRequest(BufferedInputStream input, String url) throws IOException {
+        int contentLength = 0;
+        String headerLine = readLineHeaders(input);
 
         while (true) {
-            String headerLine = readLineHeaders(input);
-
-            if (headerLine.startsWith("GET") || headerLine.startsWith("POST") || headerLine.startsWith("PUT") || headerLine.startsWith("DELETE")) {
-                parseFirstHeaderLine(request, headerLine);
-            }
 
             if (headerLine.startsWith("Content-Length"))
-                request.setContentLength(Integer.parseInt(headerLine.split(" ")[1]));
+                contentLength = Integer.parseInt(headerLine.split(" ")[1]);
+
+//            if (headerLine.startsWith("User-Agent")) {
+//                writeUserToDB(headerLine, url);
+//            }
 
             if (headerLine.isEmpty()) {
                 break;
             }
         }
-
-        if (request.getRequestType().equals("POST")) {
-            readBody(input, request);
-        }
-        return request;
+        return contentLength;
     }
+
+//    private static void writeUserToDB(String headerLine, String url) {
+//
+//        serviceStats.getStatistics().create(headerLine, url);
+//    }
 
 
 
@@ -129,14 +163,21 @@ public class Server {
 
         request.setRequestType(splitHeadline[0]);
         System.out.println("Request type: " + request.getRequestType());
-        request.setUrl(splitHeadline[1]);
-        System.out.println("Url: " + request.getUrl());
+        if(splitHeadline[1].contains("?")){
+            String key = splitHeadline[1].split("\\?")[1];
+            request.setUrl(key);
+            handleURLParamUltimate(key);
+            System.out.println("Printas ?-tecknet ut??");
+        }
+        else{
+            request.setUrl(splitHeadline[1]);
+            System.out.println("Url: " + request.getUrl());
+        }
+
         request.setHttpVersion(splitHeadline[2]);
         System.out.println("Http Version: " + request.getHttpVersion());
 
-        if(splitHeadline[1].contains("?")){
-            handleURLParameters(splitHeadline[1]);
-        }
+
     }
 
 
@@ -197,78 +238,3 @@ public class Server {
         }
     }
 }
-
-
-
-
-//    private static void handleURLParameters(String url){
-//        //Separates key and value and returns them as an URLParameter object (IS TESTED AND WORKING CORRECTLY)
-//        List<URLParameter> listOfParameters = getParametersFromUrl2(url);
-//        System.out.println("Key:" + listOfParameters.get(0).getKey() +"\tValue:"+ listOfParameters.get(0).getValueUrl());
-//        getUserInformationFromKey(listOfParameters.get(0).getValueUrl());
-//        //Create method that fetches object from database and returns it as user object
-//    }
-//    private static void getUserInformationFromKey(String idNumber) {
-//        EntityManagerFactory emf = Persistence.createEntityManagerFactory("JPA");
-//
-//        // Letar efter "500603-4268" i databasen och skriver ut personen
-//        EntityManager em = emf.createEntityManager();
-//        em.getTransaction().begin();
-//        User u = em.find(User.class, idNumber);
-//        System.out.println("Skriver ut personens information från databasen: " +u.toString());
-//        em.getTransaction().commit();
-//
-//        getUserInformationAsJson(u);
-//    }
-//
-//    private static void getUserInformationAsJson(User u){
-//        String userInfoAsJson = u.toString();
-//        System.out.println("UserInfoAsJson: " + userInfoAsJson);
-//        //JsonConverter jsonConverter = new JsonConverter();
-//        //System.out.println("Jsonconvert gives: " + jsonConverter.convertToJson(u));
-//    }
-
-
-
-
-////Text som låg i readheaders
-
-
-
-//                if(headerLine.contains("Content-Type")){
-////                request.setContentType(headerLine.split("[:]")[1]);
-
-//            if(request.getRequestType().equals("POST")){
-////                while(!headerLine.contains("</HTML>")){
-//                    completeRequest.concat(headerLine);
-//                    System.out.println(""+completeRequest);
-//                    headerLine = readLineHeaders(input);
-////                }
-//                System.out.println("HEADERLINE: " + headerLine);
-//            }
-
-
-//            System.out.println("Printar completeRequest:  " +completeRequest);
-
-
-//            System.out.println("Whole header: " + headerLine +"\n"+
-//            "splitheadline[0] = " + splitHeadline[0] +"\n"+
-//                    "splitheadline[1] = "+ splitHeadline[1]+
-//                    "\nsplitheadline[2] = "+splitHeadline[2]);
-
-
-//            request.setRequestType(headerLine.split(" ")[0]);
-//            request.setUrl(headerLine.split(" ")[1]);
-//            request.setHttpVersion(headerLine.split(" ")[2]);
-//        }
-
-//        while (headerLine != null) {
-//            headerLine = input.readLine();
-
-//            if(headerLine.contains("Content-Type")){
-//                request.setContentType(headerLine.split("[:]")[1]);
-//            }
-//request.setHttpVersion(split[2]);
-//}
-//        return request;
-//    }
