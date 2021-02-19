@@ -6,4 +6,5 @@ public interface UserDAO {
 
     void create (User u);
     List <User> getAllUsers();
+    List<User> getByFirstName(String firstName);
 }

@@ -10,7 +10,7 @@ public class UserDAOWithJPAImpl implements UserDAO {
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("JPA");
 
     @Override
-    public void create (User u){
+    public void create(User u) {
         EntityManager em = emf.createEntityManager();
         em.getTransaction();
         em.persist(u);
@@ -18,7 +18,7 @@ public class UserDAOWithJPAImpl implements UserDAO {
     }
 
     @Override
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers() {
         List<User> listOfUsers;
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
@@ -26,9 +26,19 @@ public class UserDAOWithJPAImpl implements UserDAO {
         em.getTransaction().commit();
         return listOfUsers;
     }
+
+
+    @Override
+    public List<User> getByFirstName(String name) {
+        List<User> list;
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        list = em.createQuery("from User u where u.firstName = :firstName", User.class)
+                .setParameter("firstName", name).getResultList();
+        em.getTransaction().commit();
+        return list;
+    }
 }
-
-
 
 
 

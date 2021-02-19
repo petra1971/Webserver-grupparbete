@@ -8,28 +8,28 @@ public class JPAMain {
     public static void main(String[] args) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("JPA");
 
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        User p = em.find(User.class, "530407-7989");
-        p.setFirstname("Pelle");
-        System.out.println(p);
-        em.getTransaction().commit();
-
-//        //Letar efter "500603-4268" i databasen och skriver ut personen
 //        EntityManager em = emf.createEntityManager();
 //        em.getTransaction().begin();
-//        User u = em.find(User.class, "500603-4268");
-//        System.out.println(u);
+//        User p = em.find(User.class, "530407-7989");
+//        p.setFirstname("Pelle2021");
+//        System.out.println(p.toString());
 //        em.getTransaction().commit();
 
-
+        //Letar efter "500603-4268" i databasen och skriver ut personen
+        EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
-        User ppp = new User("505012313","Pelle","Hagstedt");
-        em.persist(ppp);
-        System.out.println("pelleid = " + ppp.getId());
-        List<User> list = em.createQuery("FROM User",User.class).getResultList();
-        System.out.println(list);
+        User u = em.find(User.class, "500603-4268");
+        System.out.println(u);
         em.getTransaction().commit();
+
+
+//        em.getTransaction().begin();
+//        User ppp = new User("505012313","Pelle","Hagstedt");
+//        em.persist(ppp);
+//        System.out.println("pelleid = " + ppp.getId());
+//        List<User> list = em.createQuery("FROM User",User.class).getResultList();
+//        System.out.println(list);
+//        em.getTransaction().commit();
 
 ////		em = emf.createEntityManager();
 //		em.getTransaction().begin();

@@ -151,6 +151,21 @@ public class Server {
     //firstname: Johanna, lastname: Lennartsson
 
     private static void handleURLParameters(String url){
+        //Separates key and value and returns them as an URLParameter object (IS TESTED AND WORKING CORRECTLY)
+        List<URLParameter> listOfParameters = getParametersFromUrl2(url);
+        System.out.println("Key:" + listOfParameters.get(0).getKey() +"\tValue:"+ listOfParameters.get(0).getValueUrl());
+        getUserInformationFromKey(listOfParameters.get(0).getValueUrl());
+        //Create method that fetches object from database and returns it as user object
+    }
+    private static void getUserInformationFromKey(String idNumber) {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("JPA");
+
+        // Letar efter "500603-4268" i databasen och skriver ut personen
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        User u = em.find(User.class, idNumber);
+        System.out.println("Skriver ut personens information från databasen: " +u.toString());
+        em.getTransaction().commit();
 
     }
 
