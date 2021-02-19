@@ -129,14 +129,21 @@ public class Server {
 
         request.setRequestType(splitHeadline[0]);
         System.out.println("Request type: " + request.getRequestType());
-        request.setUrl(splitHeadline[1]);
-        System.out.println("Url: " + request.getUrl());
+        if(splitHeadline[1].contains("?")){
+            String key = splitHeadline[1].split("\\?")[1];
+            request.setUrl(key);
+            handleURLParamUltimate(key);
+            System.out.println("Printas ?-tecknet ut??");
+        }
+        else{
+            request.setUrl(splitHeadline[1]);
+            System.out.println("Url: " + request.getUrl());
+        }
+
         request.setHttpVersion(splitHeadline[2]);
         System.out.println("Http Version: " + request.getHttpVersion());
 
-        if(splitHeadline[1].contains("?")){
-            handleURLParameters(splitHeadline[1]);
-        }
+
     }
 
 
