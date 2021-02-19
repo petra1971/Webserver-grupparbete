@@ -15,6 +15,9 @@ import java.util.concurrent.Executors;
 
 public class Server {
 
+    private static UserHandler userHandler;
+
+
     public static void main(String[] args) {
 
         ExecutorService execServ = Executors.newCachedThreadPool();
@@ -51,6 +54,20 @@ public class Server {
                     }
                     Response response = handler.readFromFile(request);
                     postHttpResponse(socket, response);
+                }
+                if(request.getRequestType().equals("POST")){
+
+                    URLHandler handler = routes.get(request.getUrl());
+
+                    if (handler == null) {
+                        handler = new FileHandler();
+                    }
+
+                    postRequest(request.getBody());
+                    Response response = handler.readFromFile(request);
+
+                    postHttpResponse(socket, response);
+                    //Skicka en respons, men är det bara en vanlig response???
                 }
             }
         } catch (IOException e) {
@@ -108,7 +125,7 @@ public class Server {
     private static void readBody(BufferedInputStream input, Request request) throws IOException {
         byte[] body = new byte[request.getContentLength()];
         int i = input.read(body);
-        System.out.println("Actual: " + i + ", Expected: " + request.getContentLength());
+        System.out.println("readbody: Actual: " + i + ", Expected: " + request.getContentLength());
         String bodyText = new String(body);
         System.out.println("readBody bodyText:   " + bodyText);
         request.setBody(bodyText);
@@ -154,11 +171,11 @@ public class Server {
         String[] splitHeadline = headerLine.split(" ");
 
         request.setRequestType(splitHeadline[0]);
-        System.out.println("Request type: " + request.getRequestType());
+        System.out.println("parseFirstHeaderLine: Request type: " + request.getRequestType());
         request.setUrl(splitHeadline[1]);
-        System.out.println("Url: " + request.getUrl());
+        System.out.println("parseFirstHeaderLine: Url: " + request.getUrl());
         request.setHttpVersion(splitHeadline[2]);
-        System.out.println("Http Version: " + request.getHttpVersion());
+        System.out.println("parseFirstHeaderLine: Http Version: " + request.getHttpVersion());
 
         if(splitHeadline[1].contains("?")){
             handleURLParameters(splitHeadline[1]);
@@ -186,9 +203,7 @@ public class Server {
     private static void handleURLParameters(String url){
         //Separates key and value and returns them as an URLParameter object (IS TESTED AND WORKING CORRECTLY)
         List<URLParameter> listOfParameters = getParametersFromUrl2(url);
-        System.out.println("Key:" + listOfParameters.get(0).getKey() +"\tValue:"+ listOfParameters.get(0).getValueUrl());
-        getUserInformationFromKey(listOfParameters.get(0).getValueUrl());
-        //Create method that fetches object from database and returns it as user object
+        System.out.println("handleURLParameters: Key:" + listOfParameters.get(0).getKey() +"\tValue:"+ listOfParameters.get(0).getValueUrl());
     }
 
     private static void postHttpResponse(Socket socket, Response response) {  //kan alla svar, både filer och json, skickas som byte[]?
