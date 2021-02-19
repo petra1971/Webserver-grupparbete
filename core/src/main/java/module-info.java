@@ -1,7 +1,6 @@
 module se.group4.core {
     //requires se.group4.spi;
     requires se.group4.fileutils;
-
     //For hibernate
     requires java.persistence;
     requires java.sql;

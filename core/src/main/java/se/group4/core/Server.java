@@ -169,6 +169,11 @@ public class Server {
 
     }
 
+    private void printUserFromInformation(User u){
+
+    }
+
+
     private static void postHttpResponse(Socket socket, Response response) {  //kan alla svar, både filer och json, skickas som byte[]?
         //Lägg detta i Response-klassen eventuellt
         try {
