@@ -7,7 +7,7 @@ import se.group4.fileutils.FileReader;
 
     public class FileHandler implements URLHandler {
 
-        public Response handleURL(Request request) {
+        public Response readFromFile(Request request) {
             Response fileResponse = null;
             try {
                 File file = new File("web" + File.separator + request.getUrl());  //Create file url

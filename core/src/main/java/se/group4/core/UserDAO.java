@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface UserDAO {
 
-    void create (User u);
+    void create (String id, String firstname, String lastname);
     List <User> getAllUsers();
-    List<User> getByFirstName(String firstName);
+
 }

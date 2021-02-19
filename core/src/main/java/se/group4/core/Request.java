@@ -7,7 +7,7 @@ public class Request {
     private String url;
     private String httpVersion;
     private String contentType;
-    private String body;    //Testing
+    private String body;
     private int contentLength;
     private List<String> variablesToBeUpdated;
 
@@ -64,4 +64,8 @@ public class Request {
     public void setContentLength(int contentLength) {
         this.contentLength = contentLength;
     }
+
+    public String getBody() { return body; }
+
+    public void setBody(String body) { this.body = body; }
 }

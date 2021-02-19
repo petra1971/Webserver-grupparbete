@@ -1,8 +1,5 @@
 package se.group4.core;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -15,8 +12,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-
-//Enums  - Efter möte med Martin
 
 public class Server {
 
@@ -54,7 +49,7 @@ public class Server {
                     if (handler == null) {
                         handler = new FileHandler();
                     }
-                    Response response = handler.handleURL(request);
+                    Response response = handler.readFromFile(request);
                     postHttpResponse(socket, response);
                 }
             }
@@ -62,6 +57,9 @@ public class Server {
             e.printStackTrace();
         }
     }
+
+
+
 
 
 
@@ -74,8 +72,7 @@ public class Server {
             if (buffer[bytesRead - 1] == '\r') {
                 buffer[bytesRead++] = (byte) inputStream.read();
                 if( buffer[bytesRead - 1] == '\n') {
-                    //Här ska det försökas läsas från body
-                    break;
+                   break;
                 }
             }
         }
@@ -108,14 +105,50 @@ public class Server {
     }
 
 
-
     private static void readBody(BufferedInputStream input, Request request) throws IOException {
         byte[] body = new byte[request.getContentLength()];
         int i = input.read(body);
         System.out.println("Actual: " + i + ", Expected: " + request.getContentLength());
         String bodyText = new String(body);
-        System.out.println(bodyText);
+        System.out.println("readBody bodyText:   " + bodyText);
+        request.setBody(bodyText);
     }
+
+    private static void postRequest(String bodyIn) throws IOException {
+
+
+//        int contentLength = readHeaderLines(input, url);
+
+//        String bodyLine = new String(input.readNBytes(contentLength));
+
+        String[] body = bodyIn.split("&");
+
+        String id = body[0].substring(body[0].indexOf("=") + 1);
+        String firstname = body[1].substring(body[1].indexOf("=") + 1);
+        String lastname = body[2].substring(body[2].indexOf("=") + 1);
+
+        userHandler.createAndAddUser(id,firstname,lastname);
+
+    }
+
+
+//    private static String handleURLParamUltimate(String url) {
+//        List<URLParameter> listOfParameters = getParametersFromUrl2(url);
+//        System.out.println("Key:" + listOfParameters.get(0).getKey() +"\tValue:"+ listOfParameters.get(0).getValueUrl());
+//
+//        EntityManagerFactory emf = Persistence.createEntityManagerFactory("JPA");
+//
+//        // Letar efter "500603-4268" i databasen och skriver ut personen
+//        EntityManager em = emf.createEntityManager();
+//        em.getTransaction().begin();
+//        User u = em.find(User.class, listOfParameters.get(0).getValueUrl());
+//        System.out.println("Skriver ut personens information från databasen: " +u.toString());
+//        em.getTransaction().commit();
+//
+//        String userInfoAsJson = u.toString();
+//        return userInfoAsJson;
+//    }
+
 
     private static void parseFirstHeaderLine(Request request, String headerLine) {
         String[] splitHeadline = headerLine.split(" ");
@@ -133,12 +166,12 @@ public class Server {
     }
 
 
-    public static List<URLParameter> getParametersFromUrl2(String urlParameterString) {                     //Method returning List with UrlParameter instances
-        System.out.println(urlParameterString);
+    public static List<URLParameter> getParametersFromUrl2(String urlParameterString) {
+        System.out.println("getParametersFromUrl2 urlParameterString---" + urlParameterString);
         List<URLParameter> urlParameters = new ArrayList();
-        String[] parameterPairs = urlParameterString.split("[&]");     //Får ut par av key och värde
+        String[] parameterPairs = urlParameterString.split("[&]");
         for(String parameterPair : parameterPairs) {
-            String keyUrl = parameterPair.split("=")[0];                 //splitta på [=] och lägg in i en Map
+            String keyUrl = parameterPair.split("=")[0];
             String valueUrl = parameterPair.split("=")[1];
             urlParameters.add(new URLParameter(keyUrl, valueUrl));
             System.out.println("In getParametersFromUrl2 - RequestClass Key: " + keyUrl + " Value: " + valueUrl);
@@ -157,22 +190,6 @@ public class Server {
         getUserInformationFromKey(listOfParameters.get(0).getValueUrl());
         //Create method that fetches object from database and returns it as user object
     }
-    private static void getUserInformationFromKey(String idNumber) {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("JPA");
-
-        // Letar efter "500603-4268" i databasen och skriver ut personen
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        User u = em.find(User.class, idNumber);
-        System.out.println("Skriver ut personens information från databasen: " +u.toString());
-        em.getTransaction().commit();
-
-    }
-
-    private void printUserFromInformation(User u){
-
-    }
-
 
     private static void postHttpResponse(Socket socket, Response response) {  //kan alla svar, både filer och json, skickas som byte[]?
         //Lägg detta i Response-klassen eventuellt
@@ -197,49 +214,3 @@ public class Server {
         }
     }
 }
-
-
-
-
-
-////Text som låg i readheaders
-
-
-
-//                if(headerLine.contains("Content-Type")){
-////                request.setContentType(headerLine.split("[:]")[1]);
-
-//            if(request.getRequestType().equals("POST")){
-////                while(!headerLine.contains("</HTML>")){
-//                    completeRequest.concat(headerLine);
-//                    System.out.println(""+completeRequest);
-//                    headerLine = readLineHeaders(input);
-////                }
-//                System.out.println("HEADERLINE: " + headerLine);
-//            }
-
-
-//            System.out.println("Printar completeRequest:  " +completeRequest);
-
-
-//            System.out.println("Whole header: " + headerLine +"\n"+
-//            "splitheadline[0] = " + splitHeadline[0] +"\n"+
-//                    "splitheadline[1] = "+ splitHeadline[1]+
-//                    "\nsplitheadline[2] = "+splitHeadline[2]);
-
-
-//            request.setRequestType(headerLine.split(" ")[0]);
-//            request.setUrl(headerLine.split(" ")[1]);
-//            request.setHttpVersion(headerLine.split(" ")[2]);
-//        }
-
-//        while (headerLine != null) {
-//            headerLine = input.readLine();
-
-//            if(headerLine.contains("Content-Type")){
-//                request.setContentType(headerLine.split("[:]")[1]);
-//            }
-//request.setHttpVersion(split[2]);
-//}
-//        return request;
-//    }

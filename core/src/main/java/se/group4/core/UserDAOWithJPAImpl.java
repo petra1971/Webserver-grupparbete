@@ -10,10 +10,13 @@ public class UserDAOWithJPAImpl implements UserDAO {
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("JPA");
 
     @Override
-    public void create(User u) {
+    public void create(String id, String firstname, String lastname) {
         EntityManager em = emf.createEntityManager();
-        em.getTransaction();
-        em.persist(u);
+        User user = new User(id, firstname, lastname);
+        System.out.println("User created");
+        em.getTransaction().begin();
+        em.persist(user);
+        em.getTransaction().commit();
         em.close();
     }
 
@@ -26,62 +29,4 @@ public class UserDAOWithJPAImpl implements UserDAO {
         em.getTransaction().commit();
         return listOfUsers;
     }
-
-
-    @Override
-    public List<User> getByFirstName(String name) {
-        List<User> list;
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        list = em.createQuery("from User u where u.firstName = :firstName", User.class)
-                .setParameter("firstName", name).getResultList();
-        em.getTransaction().commit();
-        return list;
-    }
 }
-
-
-
-
-
-
-
-
-//    @Override
-//    public List<User> getByName(String name) {
-//        List<se.group4.core.User> list;
-//        EntityManager em = emf.createEntityManager();
-//        em.getTransaction().begin();
-//        list = em.createQuery("from User u where u.firstName =:firstname", se.group4.core.User.class)
-//                .setParameter("firstname",name).getResultList();
-//        em.getTransaction().commit();
-//        return list;
-//    }
-
-//    @Override
-//    public boolean updateName(String id, String newName) {
-//        boolean success = false;
-//        EntityManager em = emf.createEntityManager();
-//        em.getTransaction().begin();
-//        se.group4.core.User u = em.find(se.group4.core.User.class, id);
-//        if (u != null ) {
-//            u.setFirstName(newName);
-//            success = true;
-//        }
-//        em.getTransaction().commit();
-//        return success;
-//    }
-//
-//    @Override
-//    public boolean remove(int id) {
-//        boolean success = false;
-//        EntityManager em = emf.createEntityManager();
-//        em.getTransaction().begin();
-//        se.group4.core.User u = em.find(se.group4.core.User.class,id);
-//        if(u != null) {
-//            em.remove(u);
-//            success = true;
-//        }
-//        em.getTransaction().commit();
-//        return success;
-//    }
