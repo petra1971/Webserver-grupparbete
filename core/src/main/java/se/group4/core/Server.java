@@ -16,10 +16,10 @@ import java.util.concurrent.Executors;
 //firstname: Johanna, lastname: Lennartsson
 
 
-public class Server {
+public class Server{
 
     private static UserHandler userHandler;
-
+    private static UserDAO userDAO;
 
     public static void main(String[] args) {
 
@@ -48,7 +48,10 @@ public class Server {
 
             Request request = readRequest(input);
 
+            boolean isHead = false;
             if (request != null) {
+
+
                 if (request.getRequestType().equals("GET")) {
                     URLHandler handler = routes.get(request.getUrl());
 
@@ -56,7 +59,8 @@ public class Server {
                         handler = new FileHandler();
                     }
                     Response response = handler.readFromFile(request);
-                    postHttpResponse(socket, response);
+                    postHttpResponse(socket, response, isHead);
+
                 }
 
                 if(request.getRequestType().equals("POST")){
@@ -71,6 +75,20 @@ public class Server {
 
                     postHttpResponse(socket, response, isHead);
                     //Skicka en respons, men är det bara en vanlig response???
+                }
+
+                if(request.getRequestType().equals("HEAD")){
+                    isHead = true;
+
+                    URLHandler handler = routes.get(request.getUrl());
+
+                    if (handler == null) {
+                        handler = new FileHandler();
+                    }
+                    Response response = handler.readFromFile(request);
+
+                    //Input isHead needed
+                    postHttpResponse(socket, response, isHead);
                 }
             }
         } catch (IOException e) {
@@ -183,11 +201,24 @@ public class Server {
         request.setHttpVersion(splitHeadline[2]);
         System.out.println("parseFirstHeaderLine: Http Version: " + request.getHttpVersion());
 
-        if(splitHeadline[1].contains("?")){
-            handleURLParameters(splitHeadline[1]);
+        if (splitHeadline[1].contains("?")) {
+
+            request.setUrl(splitHeadline[1].split("\\?")[0]);
+            System.out.println("parseFirstHeaderLine() if(?): Request setURL = " + splitHeadline[1].split("\\?")[0]);
+
+            if (headerLine.startsWith("GET")) {
+                String idNr = splitHeadline[1].split("\\?")[1].split("=")[1];
+                UserDAO userDAO = new UserDAOWithJPAImpl();
+
+//                List<URLParameter> listOfParameters = getParametersFromUrl2(idNr);
+                System.out.println("idnr = " +idNr);
+                User temporaryList = userDAO.findUserById(idNr);
+
+                System.out.println("Temporarylist: " + temporaryList);
+
+            }
         }
     }
-
 
     public static List<URLParameter> getParametersFromUrl2(String urlParameterString) {
         System.out.println("getParametersFromUrl2 urlParameterString---" + urlParameterString);
@@ -208,7 +239,7 @@ public class Server {
 //        System.out.println("handleURLParameters: Key:" + listOfParameters.get(0).getKey() +"\tValue:"+ listOfParameters.get(0).getValueUrl());
 //    }
 
-    private static void postHttpResponse(Socket socket, Response response) {  //kan alla svar, både filer och json, skickas som byte[]?
+    private static void postHttpResponse(Socket socket, Response response, boolean isHead) {  //kan alla svar, både filer och json, skickas som byte[]?
         //Lägg detta i Response-klassen eventuellt
         try {
             var output = new PrintWriter(socket.getOutputStream());
@@ -221,11 +252,12 @@ public class Server {
             output.flush();
 
             //Print body/file-contents
-            var dataOut = new BufferedOutputStream(socket.getOutputStream());
-            dataOut.write(response.getContent());
-            dataOut.flush();
-            socket.close();
-
+            if(!isHead) {
+                var dataOut = new BufferedOutputStream(socket.getOutputStream());
+                dataOut.write(response.getContent());
+                dataOut.flush();
+                socket.close();
+            }
         } catch(IOException e) {
             e.printStackTrace();
         }
