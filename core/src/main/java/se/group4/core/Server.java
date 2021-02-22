@@ -165,29 +165,6 @@ public class Server{
 
     }
 
-//    public static void getRequest(String keyValue){
-//        UserDAO udao = new UserDAOWithJPAImpl();
-//
-//        System.out.println(udao.findUserById(keyValue));
-//    }
-
-
-//    private static String handleURLParamUltimate(String url) {
-//        List<URLParameter> listOfParameters = getParametersFromUrl2(url);
-//        System.out.println("Key:" + listOfParameters.get(0).getKey() +"\tValue:"+ listOfParameters.get(0).getValueUrl());
-//
-//        EntityManagerFactory emf = Persistence.createEntityManagerFactory("JPA");
-//
-//        // Letar efter "500603-4268" i databasen och skriver ut personen
-//        EntityManager em = emf.createEntityManager();
-//        em.getTransaction().begin();
-//        User u = em.find(User.class, listOfParameters.get(0).getValueUrl());
-//        System.out.println("Skriver ut personens information från databasen: " +u.toString());
-//        em.getTransaction().commit();
-//
-//        String userInfoAsJson = u.toString();
-//        return userInfoAsJson;
-//    }
 
 
     private static void parseFirstHeaderLine (Request request, String headerLine) {
