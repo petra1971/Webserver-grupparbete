@@ -29,4 +29,24 @@ public class UserDAOWithJPAImpl implements UserDAO {
         em.getTransaction().commit();
         return listOfUsers;
     }
+
+
+    public User findUserById(String ID) {
+        EntityManager em = emf.createEntityManager();
+        var user = em.createQuery("from User u where u.id = :Id", User.class)
+                .setParameter("Id", ID).getSingleResult();
+        em.close();
+        return user;
+    }
 }
+
+
+
+//    @Override
+//    public String findUserById(String ID) {
+//        EntityManager em = emf.createEntityManager();
+//        em.getTransaction().begin();
+//        User userFromId = em.find(User.class,ID);
+//        em.getTransaction().commit();
+//        return userFromId;
+//    }

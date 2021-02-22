@@ -9,11 +9,12 @@ public class FileHandler implements URLHandler {
         public Response readFromFile(Request request) {
             Response fileResponse = null;
             try {
-                File file = new File("web" + File.separator + request.getUrl());  //Create file url
-                byte[] content = se.group4.fileutils.FileHandler.readFromFile(file); //Read file contents to bit-array
-                String contentType = Files.probeContentType(file.toPath()); //Find out content type
+                File file = new File("web" + File.separator + request.getUrl());    //Create file url
+                byte[] content = se.group4.fileutils.FileHandler.readFromFile(file);        //Read file contents to bit-array
+                String contentType = Files.probeContentType(file.toPath());                 //Find out content type
                 int contentLength = content.length;
                 fileResponse = new Response(content, contentType, contentLength);
+                System.out.println("Detta är content:  " +content);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -21,3 +22,4 @@ public class FileHandler implements URLHandler {
             return fileResponse;
         }
     }
+

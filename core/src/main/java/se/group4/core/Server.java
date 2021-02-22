@@ -11,6 +11,9 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+//Exempel inmatning av ID mot databasen nedan
+//http://localhost:8080/users?ID=500603-4268
+//firstname: Johanna, lastname: Lennartsson
 
 
 public class Server {
@@ -55,8 +58,8 @@ public class Server {
                     Response response = handler.readFromFile(request);
                     postHttpResponse(socket, response);
                 }
-                if(request.getRequestType().equals("POST")){
 
+                if(request.getRequestType().equals("POST")){
                     URLHandler handler = routes.get(request.getUrl());
 
                     if (handler == null) {
@@ -66,7 +69,7 @@ public class Server {
                     postRequest(request.getBody());
                     Response response = handler.readFromFile(request);
 
-                    postHttpResponse(socket, response);
+                    postHttpResponse(socket, response, isHead);
                     //Skicka en respons, men är det bara en vanlig response???
                 }
             }
@@ -74,10 +77,6 @@ public class Server {
             e.printStackTrace();
         }
     }
-
-
-
-
 
 
     public static String readLineHeaders(BufferedInputStream inputStream) throws IOException {
@@ -97,7 +96,7 @@ public class Server {
     }
 
 
-    private static Request readRequest(BufferedInputStream input) throws IOException {
+    public static Request readRequest(BufferedInputStream input) throws IOException {
         Request request = new Request();
 
         while (true) {
@@ -105,6 +104,7 @@ public class Server {
 
             if (headerLine.startsWith("GET") || headerLine.startsWith("POST") || headerLine.startsWith("PUT") || headerLine.startsWith("DELETE")) {
                 parseFirstHeaderLine(request, headerLine);
+//                System.out.println("Utskrift getRequest:----" +Server.getRequest());
             }
 
             if (headerLine.startsWith("Content-Length"))
@@ -148,6 +148,12 @@ public class Server {
 
     }
 
+//    public static void getRequest(String keyValue){
+//        UserDAO udao = new UserDAOWithJPAImpl();
+//
+//        System.out.println(udao.findUserById(keyValue));
+//    }
+
 
 //    private static String handleURLParamUltimate(String url) {
 //        List<URLParameter> listOfParameters = getParametersFromUrl2(url);
@@ -167,7 +173,7 @@ public class Server {
 //    }
 
 
-    private static void parseFirstHeaderLine(Request request, String headerLine) {
+    private static void parseFirstHeaderLine (Request request, String headerLine) {
         String[] splitHeadline = headerLine.split(" ");
 
         request.setRequestType(splitHeadline[0]);
@@ -196,15 +202,11 @@ public class Server {
         return urlParameters;
     }
 
-    //Exempel inmatning av ID mot databasen nedan
-    //http://localhost:8080/users?ID=500603-4268
-    //firstname: Johanna, lastname: Lennartsson
-
-    private static void handleURLParameters(String url){
-        //Separates key and value and returns them as an URLParameter object (IS TESTED AND WORKING CORRECTLY)
-        List<URLParameter> listOfParameters = getParametersFromUrl2(url);
-        System.out.println("handleURLParameters: Key:" + listOfParameters.get(0).getKey() +"\tValue:"+ listOfParameters.get(0).getValueUrl());
-    }
+//    private static void handleURLParameters(String url){
+//        //Separates key and value and returns them as an URLParameter object (IS TESTED AND WORKING CORRECTLY)
+//
+//        System.out.println("handleURLParameters: Key:" + listOfParameters.get(0).getKey() +"\tValue:"+ listOfParameters.get(0).getValueUrl());
+//    }
 
     private static void postHttpResponse(Socket socket, Response response) {  //kan alla svar, både filer och json, skickas som byte[]?
         //Lägg detta i Response-klassen eventuellt

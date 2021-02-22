@@ -6,13 +6,17 @@ public class UserHandler {
 
     public static void createAndAddUser(String id, String firstname, String lastname) {
         UserDAO pdao = new UserDAOWithJPAImpl();
-//       // User u = new User(id, firstname, lastname);
         pdao.create(id,firstname,lastname);
     }
 
     public static List<User> getAllUsers(){
         UserDAO pdao = new UserDAOWithJPAImpl();
         return pdao.getAllUsers();
+    }
+
+    public static void findOneUserById(String id, String firstname, String lastname) {
+        UserDAO pdao = new UserDAOWithJPAImpl();
+        pdao.create(id,firstname,lastname);
     }
 }
 

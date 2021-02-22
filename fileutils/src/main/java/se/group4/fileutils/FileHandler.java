@@ -2,10 +2,11 @@ package se.group4.fileutils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class FileHandler {
-
+    //Från fileutils
     public static byte[] readFromFile(File file) {
         byte[] content = new byte[0];
         System.out.println("Does file exists: " + file.exists());
@@ -19,6 +20,4 @@ public class FileHandler {
         }
         return content;
     }
-
-
 }
