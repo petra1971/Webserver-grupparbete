@@ -122,7 +122,6 @@ public class Server{
 
             if (headerLine.startsWith("GET") || headerLine.startsWith("POST") || headerLine.startsWith("PUT") || headerLine.startsWith("DELETE")) {
                 parseFirstHeaderLine(request, headerLine);
-//                System.out.println("Utskrift getRequest:----" +Server.getRequest());
             }
 
             if (headerLine.startsWith("Content-Length"))
@@ -210,11 +209,11 @@ public class Server{
                 String idNr = splitHeadline[1].split("\\?")[1].split("=")[1];
                 UserDAO userDAO = new UserDAOWithJPAImpl();
 
-//                List<URLParameter> listOfParameters = getParametersFromUrl2(idNr);
                 System.out.println("idnr = " +idNr);
-                User temporaryList = userDAO.findUserById(idNr);
-
-                System.out.println("Temporarylist: " + temporaryList);
+                User userFromDatabase = userDAO.findUserById(idNr);
+                String userAsJson = userFromDatabase.toString();
+                request.setBody(userAsJson);
+                System.out.println("User from database: " + userFromDatabase);
 
             }
         }
