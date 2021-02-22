@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class FileReader {
+public class FileHandler {
 
     public static byte[] readFromFile(File file) {
         byte[] content = new byte[0];
