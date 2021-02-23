@@ -33,12 +33,18 @@ public class FileHandler implements URLHandler {
             StringBuilder stringBuilder = new StringBuilder();
             String usefulString;
             //stringBuilder.append(usefulString);
-            if (request.getRequestType().contains("GET")) {                                 //Kommenterar vi bort, så funkar allt, förutom users?"ID=xxxxxxx-xxxx
-                stringBuilder.append(httpResponse.getBody());
-                usefulString = stringBuilder.toString();
-                content = usefulString.getBytes(StandardCharsets.UTF_8);
-                System.out.println("Usefulstring= " + usefulString);
-            }
+//            if (request.getRequestType().contains("GET")) {                                 //Kommenterar vi bort, så funkar allt, förutom users?"ID=xxxxxxx-xxxx
+//                stringBuilder.append(httpResponse.getBody());
+//                usefulString = stringBuilder.toString();
+//                content = usefulString.getBytes(StandardCharsets.UTF_8);
+//                System.out.println("Usefulstring= " + usefulString);
+//            }
+//            if (!httpResponse.getBody().equals(null)) {
+//                stringBuilder.append(httpResponse.getBody());
+//
+//            }
+
+
 
             if (content.length != 0){
             //Kolla om filen finns, om inte returnera felkod 404
