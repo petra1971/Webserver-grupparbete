@@ -35,7 +35,7 @@ public class HttpResponse {
 
     public void jsonResponse(String json) {
         setBody(json.getBytes(StandardCharsets.UTF_8));
-        setHeader(printHeaderResponse("application/json"));
+//        setHeader(printHeaderResponse("application/json"));
     }
 
     private String printHeaderResponse(String contentType){
@@ -48,17 +48,17 @@ public class HttpResponse {
             return sb.toString();
     }//Motsvarande printHeaderLines finns i Server.postHttpResponse
 
-    private String pageNotFound() {
-        FileHandler fileHandler = new FileHandler();
-        setBody(fileHandler.readFromFile(new File(".." + File.separator + "web" + File.separator + "404.html")));
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("HTTP/1.1 404 Not Found\r\n");
-        sb.append("Content-Length:" + this.body.length + "\r\n");
-        sb.append("Content-Type: text/html\r\n");
-        sb.append("\r\n");
-
-        return sb.toString();
-    }
+//    public String pageNotFound() {
+//        FileHandler fileHandler = new FileHandler();
+//        setBody(fileHandler.readFromFile(new File(".." + File.separator + "web" + File.separator + "404.html")));
+//        StringBuilder sb = new StringBuilder();
+//
+//        sb.append("HTTP/1.1 404 Not Found\r\n");
+//        sb.append("Content-Length:" +this.body.length +"\r\n");
+//        sb.append("Content-Type: text/html\r\n");
+//        sb.append("\r\n");
+//
+//        return sb.toString();
+//    }
 
 }

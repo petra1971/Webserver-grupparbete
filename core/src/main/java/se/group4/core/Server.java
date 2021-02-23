@@ -58,7 +58,7 @@ public class Server{
                     if (handler == null) {
                         handler = new FileHandler();
                     }
-                    Response response = handler.readFromFile(request);
+                    Response response = handler.handleURL(request);
                     postHttpResponse(socket, response, isHead);
 
                 }
@@ -71,7 +71,7 @@ public class Server{
                     }
 
                     postRequest(request.getBody());
-                    Response response = handler.readFromFile(request);
+                    Response response = handler.handleURL(request);
 
                     postHttpResponse(socket, response, isHead);
                     //Skicka en respons, men är det bara en vanlig response???
@@ -85,7 +85,7 @@ public class Server{
                     if (handler == null) {
                         handler = new FileHandler();
                     }
-                    Response response = handler.readFromFile(request);
+                    Response response = handler.handleURL(request);
 
                     //Input isHead needed
                     postHttpResponse(socket, response, isHead);
@@ -239,3 +239,5 @@ public class Server{
         }
     }
 }
+
+// Content length verkar fungera... Content type säger null
