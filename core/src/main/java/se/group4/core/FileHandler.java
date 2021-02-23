@@ -40,7 +40,7 @@ public class FileHandler implements URLHandler {
                 System.out.println("Usefulstring= " + usefulString);
             }
 
-            if ((content.length != 0) && (!content.equals("null"))){
+            if (content.length != 0){
             //Kolla om filen finns, om inte returnera felkod 404
                 String contentType = Files.probeContentType(file.toPath());                 //Find out content type
                 response.setContent(content);
