@@ -123,9 +123,11 @@ public class Server{
             if (headerLine.startsWith("GET") || headerLine.startsWith("POST") || headerLine.startsWith("PUT") || headerLine.startsWith("DELETE")) {
                 parseFirstHeaderLine(request, headerLine);
             }
-
-            if (headerLine.startsWith("Content-Length"))
+            //Körs inte
+            if (headerLine.startsWith("Content-Length")) {
                 request.setContentLength(Integer.parseInt(headerLine.split(" ")[1]));
+//                System.out.println("Have we set contentlennght?  " + request.getContentLength());
+            }
 
             if (headerLine.isEmpty()) {
                 break;

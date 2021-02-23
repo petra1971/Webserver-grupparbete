@@ -5,6 +5,7 @@ import se.group4.fileutils.FileReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 
@@ -29,6 +30,15 @@ public class FileHandler implements URLHandler {
             System.out.println("Filehandler filepath: " + request.getUrl());
 
             byte[] content = FileReader.readFromFile(file);                                 //Read file contents to bit-array
+            StringBuilder stringBuilder = new StringBuilder();
+            String usefulString;
+            //stringBuilder.append(usefulString);
+            if (request.getRequestType().contains("GET")) {                                 //Kommenterar vi bort, så funkar allt, förutom users?"ID=xxxxxxx-xxxx
+                stringBuilder.append(httpResponse.getBody());
+                usefulString = stringBuilder.toString();
+                content = usefulString.getBytes(StandardCharsets.UTF_8);
+                System.out.println("Usefulstring= " + usefulString);
+            }
 
             if ((content.length != 0) && (!content.equals("null"))){
             //Kolla om filen finns, om inte returnera felkod 404
@@ -38,14 +48,16 @@ public class FileHandler implements URLHandler {
                 response.setContentType(Files.probeContentType(file.toPath()));
                 System.out.println("Response content type: " +contentType);
                 response.setContentLength(content.length);
-                System.out.println("Response Content Length: " +request.getContentLength());
+                System.out.println("Response Content Length: " +response.getContentLength());
                 response.setStatusMessage("HTTP/1.1 200");
             } else {
+                System.out.println("Print error:" +pageNotFound());
+                response.setContent(pageNotFound().getBytes(StandardCharsets.UTF_8));
                 //Förutsatt att detta fungerar så ska vi printa 404 error här
-                response.setStatusMessage("HTTP/1.1 400");
-                response.setContentLength(0);
-                String error = "Bad Request";
-                response.setContent(error.getBytes());
+//                response.setStatusMessage("HTTP/1.1 400");
+//                response.setContentLength(0);
+//                String error = "Bad Request";
+//                response.setContent(error.getBytes());
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -12,10 +12,10 @@ public class HttpResponse {
     private String contentType;
 
 
-    public HttpResponse(String header, byte[] body) {
-        this.header = header;
-        this.body = body;
-    }
+//    public HttpResponse(String header, byte[] body) {
+//        this.header = header;
+//        this.body = body;
+//    }
 
     public String getHeader() {
         return header;
@@ -38,15 +38,16 @@ public class HttpResponse {
 //        setHeader(printHeaderResponse("application/json"));
     }
 
-    private String printHeaderResponse(String contentType){
-        StringBuilder sb = new StringBuilder();
-            sb.append("HTTP/1.1 200 OK\r\n");
-            sb.append("Content-Length:" + this.body.length + "\r\n");
-            sb.append("Content-Type:" + contentType + "\r\n");
-            sb.append("\r\n");
-
-            return sb.toString();
-    }//Motsvarande printHeaderLines finns i Server.postHttpResponse
+//    private String printHeaderResponse(String contentType){
+//        StringBuilder sb = new StringBuilder();
+//            sb.append("HTTP/1.1 200 OK\r\n");
+//            sb.append("Content-Length:" + this.body.length + "\r\n");
+//            sb.append("Content-Type:" + contentType + "\r\n");
+//            sb.append("\r\n");
+//
+//            return sb.toString();
+//    }
+//    //Motsvarande printHeaderLines finns i Server.postHttpResponse
 
 //    public String pageNotFound() {
 //        FileHandler fileHandler = new FileHandler();
