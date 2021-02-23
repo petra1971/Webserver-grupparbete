@@ -7,7 +7,7 @@ import java.io.IOException;
 public class FileReader {
     public static byte[] readFromFile(File file) {
         byte[] content = new byte[0];
-        System.out.println("Does file exists: " + file.exists());
+        System.out.println("Filereader: Does file exists: " + file.exists());
         if (file.exists() && file.canRead()) {
             try (FileInputStream fileInputStream = new FileInputStream(file)) {
                 content = new byte[(int) file.length()];
