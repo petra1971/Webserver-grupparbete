@@ -126,7 +126,7 @@ public class Server{
             //Körs inte
             if (headerLine.startsWith("Content-Length")) {
                 request.setContentLength(Integer.parseInt(headerLine.split(" ")[1]));
-//                System.out.println("Have we set contentlennght?  " + request.getContentLength());
+//                System.out.println("Have we set contentlength?  " + request.getContentLength());
             }
 
             if (headerLine.isEmpty()) {
@@ -168,7 +168,6 @@ public class Server{
     }
 
 
-
     private static void parseFirstHeaderLine (Request request, String headerLine) {
         String[] splitHeadline = headerLine.split(" ");
 
@@ -198,24 +197,6 @@ public class Server{
         }
     }
 
-    public static List<URLParameter> getParametersFromUrl2(String urlParameterString) {
-        System.out.println("getParametersFromUrl2 urlParameterString---" + urlParameterString);
-        List<URLParameter> urlParameters = new ArrayList();
-        String[] parameterPairs = urlParameterString.split("[&]");
-        for(String parameterPair : parameterPairs) {
-            String keyUrl = parameterPair.split("=")[0];
-            String valueUrl = parameterPair.split("=")[1];
-            urlParameters.add(new URLParameter(keyUrl, valueUrl));
-            System.out.println("In getParametersFromUrl2 - RequestClass Key: " + keyUrl + " Value: " + valueUrl);
-        }
-        return urlParameters;
-    }
-
-//    private static void handleURLParameters(String url){
-//        //Separates key and value and returns them as an URLParameter object (IS TESTED AND WORKING CORRECTLY)
-//
-//        System.out.println("handleURLParameters: Key:" + listOfParameters.get(0).getKey() +"\tValue:"+ listOfParameters.get(0).getValueUrl());
-//    }
 
     private static void postHttpResponse(Socket socket, Response response, boolean isHead) {  //kan alla svar, både filer och json, skickas som byte[]?
         //Lägg detta i Response-klassen eventuellt
