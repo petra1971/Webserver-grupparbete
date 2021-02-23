@@ -116,6 +116,7 @@ public class Server{
 
     public static Request readRequest(BufferedInputStream input) throws IOException {
         Request request = new Request();
+        request.setBody("0");
 
         while (true) {
             String headerLine = readLineHeaders(input);
@@ -192,6 +193,8 @@ public class Server{
                 String userAsJson = userFromDatabase.toString();
                 request.setBody(userAsJson);
                 System.out.println("User from database: " + userFromDatabase);
+                request.setContentLength(userAsJson.length());      //testing
+
 
             }
         }
@@ -223,4 +226,38 @@ public class Server{
     }
 }
 
-// Content length verkar fungera... Content type säger null
+// Content length verkar fungera... Content type säger nulluser from
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//    public static List<URLParameter> getParametersFromUrl2(String urlParameterString) {
+//        System.out.println("getParametersFromUrl2 urlParameterString---" + urlParameterString);
+//        List<URLParameter> urlParameters = new ArrayList();
+//        String[] parameterPairs = urlParameterString.split("[&]");
+//        for(String parameterPair : parameterPairs) {
+//            String keyUrl = parameterPair.split("=")[0];
+//            String valueUrl = parameterPair.split("=")[1];
+//            urlParameters.add(new URLParameter(keyUrl, valueUrl));
+//            System.out.println("In getParametersFromUrl2 - RequestClass Key: " + keyUrl + " Value: " + valueUrl);
+//        }
+//        return urlParameters;
+//    }
+
+//    private static void handleURLParameters(String url){
+//        //Separates key and value and returns them as an URLParameter object (IS TESTED AND WORKING CORRECTLY)
+//
+//        System.out.println("handleURLParameters: Key:" + listOfParameters.get(0).getKey() +"\tValue:"+ listOfParameters.get(0).getValueUrl());
+//    }
