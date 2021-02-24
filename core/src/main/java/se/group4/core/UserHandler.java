@@ -1,95 +1,35 @@
 package se.group4.core;
 
-import java.util.List;
+import java.io.IOException;
 
-public class UserHandler {
+public class UserHandler implements URLHandler {
 
-    public static void createAndAddUser(String id, String firstname, String lastname) {
+    public void createAndAddUser(String id, String firstname, String lastname) {
         UserDAO pdao = new UserDAOWithJPAImpl();
         pdao.create(id,firstname,lastname);
     }
 
-    public static List<User> getAllUsers(){
-        UserDAO pdao = new UserDAOWithJPAImpl();
-        return pdao.getAllUsers();
+    @Override
+    public Response handleURL(Request request) {
+        Response response = new Response();
+        response.setStatusMessage("HTTP/1.1 303 See other \r\nLocation: /submitted.html");
+
+        try {
+            postRequest(request.getBody());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return response;
     }
 
-    public static void findOneUserById(String id, String firstname, String lastname) {
-        UserDAO pdao = new UserDAOWithJPAImpl();
-        pdao.create(id,firstname,lastname);
+    private void postRequest(String bodyIn) throws IOException {
+
+        String[] body = bodyIn.split("&");
+
+        String id = body[0].substring(body[0].indexOf("=") + 1);
+        String firstname = body[1].substring(body[1].indexOf("=") + 1);
+        String lastname = body[2].substring(body[2].indexOf("=") + 1);
+
+        createAndAddUser(id,firstname,lastname);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//package se.group4.core;
-//
-//import java.io.IOException;
-//import java.util.List;
-//import com.sun.net.httpserver.HttpHandler;
-//import com.sun.net.httpserver.HttpExchange;
-//
-//
-//public class UserHandler implements HttpHandler {
-//
-//    public Response handleURL(HttpExchange exchange) {
-//        Response response = null;
-//        if(exchange.getRequestMethod().equals("GET")) {
-//
-//            if(user!=null) {
-//                JsonConverter jsonConverter = new JsonConverter();
-//                var jsonResponse = jsonConverter.convertToJson(user);
-//                response.setContentType("application/json"); //ska det vara nån annan typ?
-//                byte[] jsonBytes = jsonResponse.getBytes();
-//                response.setContentLength(jsonBytes.length);
-//                response.setContent(jsonBytes);
-//                response.setStatusMessage("HTTP/1.1 200 OK");
-//            } else
-//            response.setStatusMessage("HTTP/1.1 404");
-//            response.setContentLength(0);
-//            String error = "I am error";
-//            byte[] errorBytes = error.getBytes();
-//            response.setContent(errorBytes);
-//        }
-//        else if(exchange.getRequestMethod().equals("POST")){
-//
-//            UserDAO userDAO = new UserDAOWithJPAImpl();
-//            List<User> user = userDAO.getByName("namn");
-//
-//        if(user!=null) {
-//            JsonConverter jsonConverter = new JsonConverter();
-//            var jsonResponse = jsonConverter.convertToJson(user);
-//            response.setContentType("application/json"); //ska det vara nån annan typ?
-//            byte[] jsonBytes = jsonResponse.getBytes();
-//            response.setContentLength(jsonBytes.length);
-//            response.setContent(jsonBytes);
-//            response.setStatusMessage("HTTP/1.1 200 OK");
-//        }
-//        } else{
-//            response.setStatusMessage("HTTP/1.1 404");
-//            response.setContentLength(0);
-//            String error = "I am error";
-//            byte[] errorBytes = error.getBytes();
-//            response.setContent(errorBytes);
-//    }
-//
-//        return response;
-//    }
-//
-//    @Override
-//    public void handle(HttpExchange exchange) throws IOException {
-//
-//    }
-//}

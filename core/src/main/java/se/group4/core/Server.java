@@ -4,9 +4,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -16,7 +14,7 @@ import java.util.concurrent.Executors;
 //firstname: Johanna, lastname: Lennartsson
 
 
-public class Server{
+public class Server {
 
     private static UserHandler userHandler;
     private static UserDAO userDAO;
@@ -31,7 +29,7 @@ public class Server{
             while (true) {
                 Socket socket = serverSocket.accept();
 
-                execServ.execute(()-> handleConnection(socket));
+                execServ.execute(() -> handleConnection(socket));
             }
 
         } catch (IOException e) {
@@ -44,7 +42,8 @@ public class Server{
         try {
             BufferedInputStream input = new BufferedInputStream((socket.getInputStream()));
 
-            Map<String,  URLHandler > routes = new HashMap<>();
+            Map<String, URLHandler> routes = new HashMap<>();
+            routes.put("/users", new UserHandler());
 
             Request request = readRequest(input);
 
@@ -60,24 +59,20 @@ public class Server{
                     }
                     Response response = handler.handleURL(request);
                     postHttpResponse(socket, response, isHead);
-
                 }
 
-                if(request.getRequestType().equals("POST")){
+                if (request.getRequestType().equals("POST")) {
                     URLHandler handler = routes.get(request.getUrl());
 
                     if (handler == null) {
                         handler = new FileHandler();
                     }
 
-                    postRequest(request.getBody());
                     Response response = handler.handleURL(request);
-
                     postHttpResponse(socket, response, isHead);
-                    //Skicka en respons, men är det bara en vanlig response???
                 }
 
-                if(request.getRequestType().equals("HEAD")){
+                if (request.getRequestType().equals("HEAD")) {
                     isHead = true;
 
                     URLHandler handler = routes.get(request.getUrl());
@@ -86,8 +81,6 @@ public class Server{
                         handler = new FileHandler();
                     }
                     Response response = handler.handleURL(request);
-
-                    //Input isHead needed
                     postHttpResponse(socket, response, isHead);
                 }
             }
@@ -95,7 +88,6 @@ public class Server{
             e.printStackTrace();
         }
     }
-
 
     public static String readLineHeaders(BufferedInputStream inputStream) throws IOException {
         final int MAX_READ = 4096;
@@ -105,14 +97,13 @@ public class Server{
             buffer[bytesRead++] = (byte) inputStream.read();
             if (buffer[bytesRead - 1] == '\r') {
                 buffer[bytesRead++] = (byte) inputStream.read();
-                if( buffer[bytesRead - 1] == '\n') {
-                   break;
+                if (buffer[bytesRead - 1] == '\n') {
+                    break;
                 }
             }
         }
-        return new String(buffer,0,bytesRead-2, StandardCharsets.UTF_8);
+        return new String(buffer, 0, bytesRead - 2, StandardCharsets.UTF_8);
     }
-
 
     public static Request readRequest(BufferedInputStream input) throws IOException {
         Request request = new Request();
@@ -124,10 +115,9 @@ public class Server{
             if (headerLine.startsWith("GET") || headerLine.startsWith("POST") || headerLine.startsWith("PUT") || headerLine.startsWith("DELETE")) {
                 parseFirstHeaderLine(request, headerLine);
             }
-            //Körs inte
+
             if (headerLine.startsWith("Content-Length")) {
                 request.setContentLength(Integer.parseInt(headerLine.split(" ")[1]));
-//                System.out.println("Have we set contentlength?  " + request.getContentLength());
             }
 
             if (headerLine.isEmpty()) {
@@ -141,54 +131,36 @@ public class Server{
         return request;
     }
 
-
     private static void readBody(BufferedInputStream input, Request request) throws IOException {
         byte[] body = new byte[request.getContentLength()];
         int i = input.read(body);
-        System.out.println("readbody: Actual: " + i + ", Expected: " + request.getContentLength());
+        System.out.println("Body: Actual: " + i + ", Expected: " + request.getContentLength());
         String bodyText = new String(body);
-        System.out.println("readBody bodyText:   " + bodyText);
+        System.out.println("BodyText:   " + bodyText);
         request.setBody(bodyText);
     }
 
-    private static void postRequest(String bodyIn) throws IOException {
 
-
-//        int contentLength = readHeaderLines(input, url);
-
-//        String bodyLine = new String(input.readNBytes(contentLength));
-
-        String[] body = bodyIn.split("&");
-
-        String id = body[0].substring(body[0].indexOf("=") + 1);
-        String firstname = body[1].substring(body[1].indexOf("=") + 1);
-        String lastname = body[2].substring(body[2].indexOf("=") + 1);
-
-        userHandler.createAndAddUser(id,firstname,lastname);
-
-    }
-
-
-    private static void parseFirstHeaderLine (Request request, String headerLine) {
+    private static void parseFirstHeaderLine(Request request, String headerLine) {
         String[] splitHeadline = headerLine.split(" ");
 
         request.setRequestType(splitHeadline[0]);
-        System.out.println("parseFirstHeaderLine: Request type: " + request.getRequestType());
+        System.out.println("Request Type: " + request.getRequestType());
         request.setUrl(splitHeadline[1]);
-        System.out.println("parseFirstHeaderLine: Url: " + request.getUrl());
+        System.out.println("Request Url: " + request.getUrl());
         request.setHttpVersion(splitHeadline[2]);
-        System.out.println("parseFirstHeaderLine: Http Version: " + request.getHttpVersion());
+        System.out.println("Request Http Version: " + request.getHttpVersion());
 
         if (splitHeadline[1].contains("?")) {
 
             request.setUrl(splitHeadline[1].split("\\?")[0]);
-            System.out.println("parseFirstHeaderLine() if(?): Request setURL = " + splitHeadline[1].split("\\?")[0]);
+            System.out.println("Request setURL: " + splitHeadline[1].split("\\?")[0]);
 
             if (headerLine.startsWith("GET")) {
                 String idNr = splitHeadline[1].split("\\?")[1].split("=")[1];
                 UserDAO userDAO = new UserDAOWithJPAImpl();
 
-                System.out.println("idnr = " +idNr);
+                System.out.println("ID nr: " + idNr);
                 User userFromDatabase = userDAO.findUserById(idNr);
                 String userAsJson = userFromDatabase.toString();
                 request.setBody(userAsJson);
@@ -200,64 +172,30 @@ public class Server{
         }
     }
 
-
-    private static void postHttpResponse(Socket socket, Response response, boolean isHead) {  //kan alla svar, både filer och json, skickas som byte[]?
-        //Lägg detta i Response-klassen eventuellt
+    private static void postHttpResponse(Socket socket, Response response, boolean isHead) {
         try {
             var output = new PrintWriter(socket.getOutputStream());
 
-            //Print header
-            output.println("HTTP/1.1 200 OK");
+            if (response.getStatusMessage().contains("303")) {
+
+                output.println(response.getStatusMessage());
+            } else {
+                output.println("HTTP/1.1 200 OK");
+            }
             output.println("Content-Length:" + response.getContent().length);
             output.println("Content-Type:" + response.getContentType());
             output.println("");
             output.flush();
 
-            //Print body/file-contents
-            if(!isHead) {
+            if (!isHead) {
                 var dataOut = new BufferedOutputStream(socket.getOutputStream());
                 dataOut.write(response.getContent());
                 dataOut.flush();
                 socket.close();
             }
-        } catch(IOException e) {
+        } catch (
+                IOException e) {
             e.printStackTrace();
         }
     }
 }
-
-// Content length verkar fungera... Content type säger nulluser from
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//    public static List<URLParameter> getParametersFromUrl2(String urlParameterString) {
-//        System.out.println("getParametersFromUrl2 urlParameterString---" + urlParameterString);
-//        List<URLParameter> urlParameters = new ArrayList();
-//        String[] parameterPairs = urlParameterString.split("[&]");
-//        for(String parameterPair : parameterPairs) {
-//            String keyUrl = parameterPair.split("=")[0];
-//            String valueUrl = parameterPair.split("=")[1];
-//            urlParameters.add(new URLParameter(keyUrl, valueUrl));
-//            System.out.println("In getParametersFromUrl2 - RequestClass Key: " + keyUrl + " Value: " + valueUrl);
-//        }
-//        return urlParameters;
-//    }
-
-//    private static void handleURLParameters(String url){
-//        //Separates key and value and returns them as an URLParameter object (IS TESTED AND WORKING CORRECTLY)
-//
-//        System.out.println("handleURLParameters: Key:" + listOfParameters.get(0).getKey() +"\tValue:"+ listOfParameters.get(0).getValueUrl());
-//    }

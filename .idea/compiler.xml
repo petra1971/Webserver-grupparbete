@@ -7,13 +7,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="core" />
-        <module name="client" />
         <module name="plugin" />
         <module name="fileutils" />
         <module name="spi" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="client" target="15" />
       <module name="dao" target="15" />
       <module name="database" target="15" />
     </bytecodeTargetLevel>

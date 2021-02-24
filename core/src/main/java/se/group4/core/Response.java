@@ -1,10 +1,10 @@
 package se.group4.core;
 
 public class Response {
-    private byte[] content;
-    private String contentType;
+    private byte[] content = new byte[0];
+    private String contentType = "";
     int contentLength;
-    String statusMessage;
+    String statusMessage = "";
 
     public Response() {
     }

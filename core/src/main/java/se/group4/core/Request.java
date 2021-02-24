@@ -6,26 +6,11 @@ public class Request {
     private String requestType;
     private String url;
     private String httpVersion;
-    private String contentType;
     private String body;
     private int contentLength;
-    private List<String> variablesToBeUpdated;
-
-
-    //First check for URL
-    //If not url check for file
-    //If no file send 404 error
 
     public Request() {
     }
-
-//    public Request(String requestType, String url, String httpVersion, String contentType, int contentLength) {
-//        this.requestType = requestType;
-//        this.url = url;
-//        this.httpVersion = httpVersion;
-//        this.contentType = contentType;
-//        this.contentLength = contentLength;
-//    }
 
     public String getRequestType() {
         return requestType;
@@ -48,14 +33,6 @@ public class Request {
     }
 
     public void setHttpVersion(String httpVersion) { this.httpVersion = httpVersion;}
-
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
 
     public int getContentLength() {
         return contentLength;

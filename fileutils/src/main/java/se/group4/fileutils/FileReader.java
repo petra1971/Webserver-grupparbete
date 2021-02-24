@@ -12,7 +12,6 @@ public class FileReader {
             try (FileInputStream fileInputStream = new FileInputStream(file)) {
                 content = new byte[(int) file.length()];
                 int count = fileInputStream.read(content);
-                System.out.println("count i readFromFile " +count);
             } catch (IOException e) {
                 e.printStackTrace();
             }
