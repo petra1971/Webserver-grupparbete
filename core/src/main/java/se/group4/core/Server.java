@@ -165,9 +165,7 @@ public class Server {
                 String userAsJson = userFromDatabase.toString();
                 request.setBody(userAsJson);
                 System.out.println("User from database: " + userFromDatabase);
-                request.setContentLength(userAsJson.length());      //testing
-
-
+                request.setContentLength(userAsJson.length());
             }
         }
     }
